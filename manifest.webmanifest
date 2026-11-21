@@ -1,0 +1,9 @@
+{
+  "name": "免許証管理",
+  "short_name": "免許証管理",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f1f4f8",
+  "theme_color": "#24466b",
+  "lang": "ja"
+}
