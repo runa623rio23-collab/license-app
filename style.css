@@ -1,0 +1,36 @@
+body {
+  background: #f1f4f8;
+  font-family: sans-serif;
+  padding: 15px;
+}
+.app {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+h2 { color: #24466b; }
+input, textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 13px;
+  margin: 7px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+textarea { min-height: 65px; }
+button {
+  width: 100%;
+  padding: 14px;
+  background: #24466b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+.item {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
