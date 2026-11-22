@@ -172,8 +172,6 @@ div.appendChild(printButton);
     });
 }
 
-}
-
 function backupData() {
   const blob = new Blob(
     [JSON.stringify(records, null, 2)],
