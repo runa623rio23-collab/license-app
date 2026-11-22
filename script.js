@@ -220,3 +220,82 @@ function restoreData(event) {
 }
 
 showData();
+
+function printData(id) {
+  const record = records.find(r => r.id === id);
+  if (!record) return;
+
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    alert("印刷画面が開けません。ポップアップを許可してください。");
+    return;
+  }
+
+  const escapeHTML = value =>
+    String(value || "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+      <meta charset="UTF-8">
+      <title>登録情報</title>
+      <style>
+        body {
+          font-family: sans-serif;
+          padding: 30px;
+          color: #263445;
+        }
+        h2 {
+          color: #24466b;
+          border-bottom: 2px solid #24466b;
+          padding-bottom: 12px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 25px;
+        }
+        th, td {
+          border: 1px solid #aaa;
+          padding: 15px;
+          text-align: left;
+          overflow-wrap: anywhere;
+        }
+        th {
+          width: 30%;
+          background: #edf2f7;
+        }
+        @media print {
+          body { padding: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <h2>免許証登録情報</h2>
+      <table>
+        <tr><th>氏名</th><td>${escapeHTML(record.name)}</td></tr>
+        <tr><th>生年月日</th><td>${escapeHTML(record.birthdate)}</td></tr>
+        <tr><th>免許番号</th><td>${escapeHTML(record.licenseNumber)}</td></tr>
+        <tr><th>住所</th><td>${escapeHTML(record.address)}</td></tr>
+        <tr><th>本籍地</th><td>${escapeHTML(record.domicile)}</td></tr>
+      </table>
+      <script>
+        window.onload = function() {
+          window.print();
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
+
