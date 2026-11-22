@@ -1,1 +1,1 @@
-# license-app2
+# license-app
