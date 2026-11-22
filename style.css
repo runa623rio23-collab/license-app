@@ -1,36 +1,127 @@
-body {
-  background: #f1f4f8;
-  font-family: sans-serif;
-  padding: 15px;
-}
-.app {
-  max-width: 500px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-}
-h2 { color: #24466b; }
-input, textarea {
+
+* {
   box-sizing: border-box;
-  width: 100%;
-  padding: 13px;
-  margin: 7px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
 }
-textarea { min-height: 65px; }
-button {
-  width: 100%;
-  padding: 14px;
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #f1f4f8;
+  color: #263445;
+  font-family: sans-serif;
+}
+
+.app {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin: 0;
+  padding: 20px;
   background: #24466b;
   color: white;
-  border: none;
+  border-radius: 12px 12px 0 0;
+  font-size: 23px;
+}
+
+.app > p {
+  margin: 0;
+  padding: 12px 20px;
+  background: white;
+  color: #66758a;
+}
+
+h3 {
+  margin-top: 24px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #24466b;
+  color: #24466b;
+}
+
+input,
+textarea {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid #ccd5df;
   border-radius: 8px;
+  background: white;
   font-size: 16px;
 }
-.item {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+
+textarea {
+  min-height: 75px;
+  resize: vertical;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  color: #44556a;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+button {
+  margin: 6px 4px 6px 0;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #24466b;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 0.75;
+}
+
+#list {
+  display: grid;
+  gap: 14px;
+}
+
+.record {
+  padding: 18px;
+  border: 1px solid #dce3eb;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.record h4 {
+  margin: 0 0 12px;
+  color: #24466b;
+  font-size: 19px;
+}
+
+.record p {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  color: #44556a;
+}
+
+.record button {
+  min-width: 75px;
+}
+
+#cancelEdit {
+  background: #718096;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  button {
+    padding: 12px 14px;
+  }
 }
