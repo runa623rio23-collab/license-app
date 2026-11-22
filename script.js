@@ -1,7 +1,10 @@
+
 let records = JSON.parse(localStorage.getItem("licenseRecords") || "[]");
 
 function saveData() {
   const name = document.getElementById("name").value.trim();
+  const birthdate = document.getElementById("birthdate").value;
+  const licenseNumber = document.getElementById("licenseNumber").value.trim();
   const address = document.getElementById("address").value.trim();
   const domicile = document.getElementById("domicile").value.trim();
 
@@ -10,79 +13,54 @@ function saveData() {
     return;
   }
 
-  records.push({
+  const record = {
     id: Date.now(),
     name,
+    birthdate,
+    licenseNumber,
     address,
-    domicile,
-    date: new Date().toLocaleString("ja-JP")
-  });
+    domicile
+  };
 
-  saveRecords();
+  records.push(record);
+  localStorage.setItem("licenseRecords", JSON.stringify(records));
+
   document.getElementById("name").value = "";
+  document.getElementById("birthdate").value = "";
+  document.getElementById("licenseNumber").value = "";
   document.getElementById("address").value = "";
   document.getElementById("domicile").value = "";
-  showData();
-}
 
-function saveRecords() {
-  localStorage.setItem("licenseRecords", JSON.stringify(records));
+  showData();
+  alert("保存しました");
 }
 
 function showData() {
   const keyword = document.getElementById("search").value.trim();
   const list = document.getElementById("list");
+
   list.innerHTML = "";
 
-  records.filter(r => r.name.includes(keyword))
-    .forEach(r => {
-      const item = document.createElement("div");
-      item.className = "item";
+  records
+    .filter(record => record.name.includes(keyword))
+    .forEach(record => {
+      const div = document.createElement("div");
+      div.className = "record";
 
-      const title = document.createElement("strong");
-      title.textContent = r.name;
+      const title = document.createElement("h4");
+      title.textContent = record.name;
 
       const details = document.createElement("p");
       details.textContent =
-        "住所：" + r.address +
-        "\n本籍地：" + r.domicile +
-        "\n登録日：" + (r.date || "記録なし");
-      details.style.whiteSpace = "pre-wrap";
+        "生年月日：" + (record.birthdate || "") +
+        "\n免許番号：" + (record.licenseNumber || "") +
+        "\n住所：" + (record.address || "") +
+        "\n本籍地：" + (record.domicile || "");
 
-      const edit = document.createElement("button");
-      edit.textContent = "編集";
-      edit.onclick = () => editData(r.id);
-
-      const del = document.createElement("button");
-      del.textContent = "削除";
-      del.style.marginTop = "5px";
-      del.onclick = () => deleteData(r.id);
-
-      item.append(title, details, edit, del);
-      list.appendChild(item);
+      div.appendChild(title);
+      div.appendChild(details);
+      list.appendChild(div);
     });
-}
-
-function editData(id) {
-  const r = records.find(x => x.id === id);
-  if (!r) return;
-
-  document.getElementById("name").value = r.name;
-  document.getElementById("address").value = r.address;
-  document.getElementById("domicile").value = r.domicile;
-
-  records = records.filter(x => x.id !== id);
-  saveRecords();
-  showData();
-
-  alert("内容を変更して、もう一度保存してください");
-}
-
-function deleteData(id) {
-  if (!confirm("削除しますか？")) return;
-  records = records.filter(x => x.id !== id);
-  saveRecords();
-  showData();
 }
 
 function backupData() {
@@ -90,10 +68,11 @@ function backupData() {
     [JSON.stringify(records, null, 2)],
     { type: "application/json" }
   );
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "免許証管理バックアップ.json";
+  a.download = "license-backup.json";
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -103,21 +82,29 @@ function restoreData(event) {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = () => {
+
+  reader.onload = function(e) {
     try {
-      const data = JSON.parse(reader.result);
-      if (!Array.isArray(data)) throw new Error();
+      const data = JSON.parse(e.target.result);
 
-      if (!confirm("現在のデータを置き換えますか？")) return;
+      if (!Array.isArray(data)) {
+        throw new Error("形式が違います");
+      }
 
-      records = data;
-      saveRecords();
+      records = data.map(record => ({
+        ...record,
+        birthdate: record.birthdate || "",
+        licenseNumber: record.licenseNumber || ""
+      }));
+
+      localStorage.setItem("licenseRecords", JSON.stringify(records));
       showData();
       alert("復元しました");
     } catch {
-      alert("正しいバックアップファイルではありません");
+      alert("バックアップファイルを読み込めませんでした");
     }
   };
+
   reader.readAsText(file);
 }
 
