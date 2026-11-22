@@ -162,6 +162,11 @@ function showData() {
       div.appendChild(details);
       div.appendChild(editButton);
       div.appendChild(deleteButton);
+      const printButton = document.createElement("button");
+printButton.textContent = "印刷";
+printButton.onclick = () => printData(record.id);
+
+div.appendChild(printButton);
 
       list.appendChild(div);
     });
