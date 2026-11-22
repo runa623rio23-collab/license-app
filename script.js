@@ -124,7 +124,17 @@ function showData() {
   list.innerHTML = "";
 
   records
-    .filter(record => (record.name || "").includes(keyword))
+    .filter(record => {
+      const name = record.name || "";
+      const licenseNumber = record.licenseNumber || "";
+      const birthdate = record.birthdate || "";
+
+      return (
+        name.includes(keyword) ||
+        licenseNumber.includes(keyword) ||
+        birthdate.includes(keyword)
+      );
+    })
     .forEach(record => {
       const div = document.createElement("div");
       div.className = "record";
@@ -155,6 +165,8 @@ function showData() {
 
       list.appendChild(div);
     });
+}
+
 }
 
 function backupData() {
