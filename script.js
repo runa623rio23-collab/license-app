@@ -1,5 +1,6 @@
 
 let records = JSON.parse(localStorage.getItem("licenseRecords") || "[]");
+let editingId = null;
 
 function saveData() {
   const name = document.getElementById("name").value.trim();
@@ -13,26 +14,107 @@ function saveData() {
     return;
   }
 
-  const record = {
-    id: Date.now(),
-    name,
-    birthdate,
-    licenseNumber,
-    address,
-    domicile
-  };
+  if (editingId !== null) {
+    const index = records.findIndex(r => r.id === editingId);
 
-  records.push(record);
-  localStorage.setItem("licenseRecords", JSON.stringify(records));
+    if (index !== -1) {
+      records[index] = {
+        ...records[index],
+        name,
+        birthdate,
+        licenseNumber,
+        address,
+        domicile
+      };
+    }
 
+    editingId = null;
+  } else {
+    records.push({
+      id: Date.now(),
+      name,
+      birthdate,
+      licenseNumber,
+      address,
+      domicile
+    });
+  }
+
+  saveToStorage();
+  clearForm();
+  showData();
+  alert("保存しました");
+}
+
+function editData(id) {
+  const record = records.find(r => r.id === id);
+  if (!record) return;
+
+  document.getElementById("name").value = record.name || "";
+  document.getElementById("birthdate").value = record.birthdate || "";
+  document.getElementById("licenseNumber").value = record.licenseNumber || "";
+  document.getElementById("address").value = record.address || "";
+  document.getElementById("domicile").value = record.domicile || "";
+
+  editingId = id;
+
+  const button = document.querySelector(".app button");
+  button.textContent = "変更を保存する";
+
+  let cancelButton = document.getElementById("cancelEdit");
+
+  if (!cancelButton) {
+    cancelButton = document.createElement("button");
+    cancelButton.id = "cancelEdit";
+    cancelButton.textContent = "編集をキャンセル";
+    cancelButton.onclick = cancelEdit;
+    button.insertAdjacentElement("afterend", cancelButton);
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function cancelEdit() {
+  editingId = null;
+  clearForm();
+  showData();
+
+  const button = document.querySelector(".app button");
+  button.textContent = "保存する";
+
+  const cancelButton = document.getElementById("cancelEdit");
+  if (cancelButton) cancelButton.remove();
+}
+
+function deleteData(id) {
+  if (!confirm("この登録情報を削除しますか？")) return;
+
+  records = records.filter(r => r.id !== id);
+
+  if (editingId === id) {
+    cancelEdit();
+  }
+
+  saveToStorage();
+  showData();
+}
+
+function clearForm() {
   document.getElementById("name").value = "";
   document.getElementById("birthdate").value = "";
   document.getElementById("licenseNumber").value = "";
   document.getElementById("address").value = "";
   document.getElementById("domicile").value = "";
 
-  showData();
-  alert("保存しました");
+  const button = document.querySelector(".app button");
+  button.textContent = "保存する";
+
+  const cancelButton = document.getElementById("cancelEdit");
+  if (cancelButton) cancelButton.remove();
+}
+
+function saveToStorage() {
+  localStorage.setItem("licenseRecords", JSON.stringify(records));
 }
 
 function showData() {
@@ -42,23 +124,35 @@ function showData() {
   list.innerHTML = "";
 
   records
-    .filter(record => record.name.includes(keyword))
+    .filter(record => (record.name || "").includes(keyword))
     .forEach(record => {
       const div = document.createElement("div");
       div.className = "record";
 
       const title = document.createElement("h4");
-      title.textContent = record.name;
+      title.textContent = record.name || "";
 
       const details = document.createElement("p");
+      details.style.whiteSpace = "pre-line";
       details.textContent =
         "生年月日：" + (record.birthdate || "") +
         "\n免許番号：" + (record.licenseNumber || "") +
         "\n住所：" + (record.address || "") +
         "\n本籍地：" + (record.domicile || "");
 
+      const editButton = document.createElement("button");
+      editButton.textContent = "編集";
+      editButton.onclick = () => editData(record.id);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "削除";
+      deleteButton.onclick = () => deleteData(record.id);
+
       div.appendChild(title);
       div.appendChild(details);
+      div.appendChild(editButton);
+      div.appendChild(deleteButton);
+
       list.appendChild(div);
     });
 }
@@ -91,18 +185,23 @@ function restoreData(event) {
         throw new Error("形式が違います");
       }
 
-      records = data.map(record => ({
+      records = data.map((record, index) => ({
         ...record,
+        id: record.id ?? Date.now() + index,
         birthdate: record.birthdate || "",
         licenseNumber: record.licenseNumber || ""
       }));
 
-      localStorage.setItem("licenseRecords", JSON.stringify(records));
+      editingId = null;
+      saveToStorage();
+      clearForm();
       showData();
       alert("復元しました");
     } catch {
       alert("バックアップファイルを読み込めませんでした");
     }
+
+    event.target.value = "";
   };
 
   reader.readAsText(file);
