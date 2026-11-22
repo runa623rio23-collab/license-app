@@ -1,5 +1,5 @@
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#24466b"><!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -7,23 +7,37 @@
   <title>免許証管理</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#24466b">
+  <meta name="theme-color" content="#24466b">
 </head>
 <body>
-<div class="app">  
-  <h2>🚗 免許証管理</h2>  
-  <p>教習所 受付用</p>    <h3>免許証情報の登録</h3>  
-  <input id="name" placeholder="氏名">  
-  <textarea id="address" placeholder="住所"></textarea>  
-  <textarea id="domicile" placeholder="本籍地"></textarea>  <button onclick="saveData()">保存する</button>
+<div class="app">
+  <h2>🚗 免許証管理</h2>
+  <p>教習所 受付用</p>
 
-  <h3>保存済み一覧</h3>  
-  <input id="search" placeholder="氏名で検索" oninput="showData()">  
-  <div id="list"></div>  
-</div>  <h3>データ管理</h3>  
-<button onclick="backupData()">バックアップ保存</button>  
-<p>バックアップから復元</p>  
-<input type="file" accept=".json" onchange="restoreData(event)">  
+  <h3>免許証情報の登録</h3>
+
+  <input id="name" placeholder="氏名">
+
+  <label for="birthdate">生年月日</label>
+  <input id="birthdate" type="date">
+
+  <input id="licenseNumber" placeholder="免許番号">
+
+  <textarea id="address" placeholder="住所"></textarea>
+  <textarea id="domicile" placeholder="本籍地"></textarea>
+
+  <button onclick="saveData()">保存する</button>
+
+  <h3>保存済み一覧</h3>
+  <input id="search" placeholder="氏名で検索" oninput="showData()">
+  <div id="list"></div>
+</div>
+
+<h3>データ管理</h3>
+<button onclick="backupData()">バックアップ保存</button>
+<p>バックアップから復元</p>
+<input type="file" accept=".json" onchange="restoreData(event)">
+
 <script src="script.js"></script>
 
 <script>
@@ -33,6 +47,5 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-
 </body>
 </html>
